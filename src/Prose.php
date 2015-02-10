@@ -9,9 +9,12 @@ class Prose
 
     protected $apiKey;
 
-    public function __construct($apiKey)
+    protected $url;
+
+    public function __construct($apiKey, $url = 'https://leanpub.com')
     {
         $this->apiKey = $apiKey;
+        $this->url = $url;
     }
 
     public function setHttpRequester(HttpRequesterInterface $requester)
@@ -37,7 +40,7 @@ class Prose
     {
         $key = "api_key={$this->apiKey}";
         $data = ($data) ? $key . "&$data" : $key;
-        $url = "https://leanpub.com/$slug/$document";
+        $url = "{$this->url}/$slug/$document";
         $this->requester->request('POST', $url, $data);
     }
 }
