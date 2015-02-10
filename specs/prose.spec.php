@@ -1,9 +1,11 @@
 <?php
 use Brianium\Prose\Prose;
+use Brianium\Prose\Http\HttpRequesterInterface;
 
 describe('Prose', function () {
     beforeEach(function () {
         $this->prose = new Prose('12345');
+
     });
 
     describe('->preview()', function () {
@@ -34,7 +36,7 @@ describe('Prose', function () {
     });
 });
 
-class MockRequester
+class MockRequester implements HttpRequesterInterface
 {
     public $called = [];
 
