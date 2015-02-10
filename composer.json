@@ -1,0 +1,20 @@
+{
+    "name": "brianium/prose",
+    "description": "A tool to simplify publishing online",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brian Scaturro",
+            "email": "scaturrob@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "peridot-php/peridot": "~1.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Brianium\\Prose\\": "src/"
+        }
+    }
+}
