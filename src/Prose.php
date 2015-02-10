@@ -23,4 +23,9 @@ class Prose
     {
         $this->requester->request('POST', "https://leanpub.com/$slug/preview.json", "api_key={$this->apiKey}");
     }
+
+    public function publish($slug)
+    {
+        $this->requester->request('POST', "https://leanpub.com/$slug/publish.json", "api_key={$this->apiKey}");
+    }
 }
