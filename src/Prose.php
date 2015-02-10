@@ -27,6 +27,11 @@ class Prose
         $this->post($slug, 'preview.json');
     }
 
+    public function subset($slug)
+    {
+        $this->post($slug, 'subset.json');
+    }
+
     public function publish($slug, $releaseNotes = '')
     {
         if ($releaseNotes) {

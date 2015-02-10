@@ -17,8 +17,16 @@ describe('Prose', function () {
     describe('->preview()', function () {
         it('should request a book preview', function () {
             $this->prose->preview('slug');
-            
+
             $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled();
+        });
+    });
+
+    describe('->subset()', function () {
+        it('should request a subset preview', function () {
+            $this->prose->subset('slug');
+
+            $this->requester->request('POST', 'https://leanpub.com/slug/subset.json', 'api_key=12345')->shouldHaveBeenCalled();
         });
     });
 
