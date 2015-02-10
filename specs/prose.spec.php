@@ -6,16 +6,19 @@ describe('Prose', function () {
     beforeEach(function () {
         $this->prose = new Prose('12345');
 
+        $interface = 'Brianium\Prose\Http\HttpRequesterInterface';
+        $this->requester = $this->getProphet()->prophesize($interface);
+    });
+
+    afterEach(function () {
+        $this->getProphet()->checkPredictions();
     });
 
     describe('->preview()', function () {
         it('should request a book preview', function () {
-            $requester = new MockRequester();
-            $this->prose->setHttpRequester($requester); // given
+            $this->prose->setHttpRequester($this->requester->reveal()); // given
             $this->prose->preview('slug'); // when
-            expect($requester->called)->be->an('array')->and->have->property(0, 'POST'); //then
-            expect($requester->called)->to->have->property(1, 'https://leanpub.com/slug/preview.json');
-            expect($requester->called)->to->have->property(2, 'api_key=12345');
+            $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled(); //then
         });
     });
 
@@ -35,13 +38,3 @@ describe('Prose', function () {
 
     });
 });
-
-class MockRequester implements HttpRequesterInterface
-{
-    public $called = [];
-
-    public function request($method, $url, $data)
-    {
-        $this->called = [$method, $url, $data];
-    }
-}
