@@ -24,8 +24,14 @@ class Prose
         $this->requester->request('POST', "https://leanpub.com/$slug/preview.json", "api_key={$this->apiKey}");
     }
 
-    public function publish($slug)
+    public function publish($slug, $releaseNotes = '')
     {
-        $this->requester->request('POST', "https://leanpub.com/$slug/publish.json", "api_key={$this->apiKey}");
+        $data = "api_key={$this->apiKey}";
+
+        if ($releaseNotes) {
+            $data .= '&publish[email_readers]=true&publish[release_notes]=' . urlencode($releaseNotes);
+        }
+
+        $this->requester->request('POST', "https://leanpub.com/$slug/publish.json", $data);
     }
 }
