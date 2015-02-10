@@ -3,7 +3,7 @@ use Brianium\Prose\Prose;
 
 describe('Prose', function () {
     beforeEach(function () {
-        $this->prose = new Prose();
+        $this->prose = new Prose('12345');
     });
 
     describe('->preview()', function () {
