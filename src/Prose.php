@@ -21,17 +21,23 @@ class Prose
 
     public function preview($slug)
     {
-        $this->requester->request('POST', "https://leanpub.com/$slug/preview.json", "api_key={$this->apiKey}");
+        $this->post($slug, 'preview.json');
     }
 
     public function publish($slug, $releaseNotes = '')
     {
-        $data = "api_key={$this->apiKey}";
-
         if ($releaseNotes) {
-            $data .= '&publish[email_readers]=true&publish[release_notes]=' . urlencode($releaseNotes);
+            $releaseNotes = 'publish[email_readers]=true&publish[release_notes]=' . urlencode($releaseNotes);
         }
 
-        $this->requester->request('POST', "https://leanpub.com/$slug/publish.json", $data);
+        $this->post($slug, 'publish.json', $releaseNotes);
+    }
+
+    protected function post($slug, $document, $data = '')
+    {
+        $key = "api_key={$this->apiKey}";
+        $data = ($data) ? $key . "&$data" : $key;
+        $url = "https://leanpub.com/$slug/$document";
+        $this->requester->request('POST', $url, $data);
     }
 }
