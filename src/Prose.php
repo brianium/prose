@@ -58,10 +58,20 @@ class Prose
 
     public function status($slug)
     {
-        $response = $this->requester->request('GET', "{$this->url}/$slug/book_status?api_key={$this->apiKey}");
-        $status = $response->getStatus();
+        $response = $this->get($slug, 'book_status');
 
-        if ($status >= 200 && $status < 400) {
+        if ($response->isSuccessful()) {
+            return json_decode($response->getContent());
+        }
+
+        return null;
+    }
+
+    public function summary($slug)
+    {
+        $response = $this->get($slug);
+
+        if ($response->isSuccessful()) {
             return json_decode($response->getContent());
         }
 
@@ -74,5 +84,19 @@ class Prose
         $data = ($data) ? $key . "&$data" : $key;
         $url = "{$this->url}/$slug/$document";
         return $this->requester->request('POST', $url, $data, ['Content-Type' => 'application/x-www-form-urlencoded']);
+    }
+
+    protected function get($slug, $document = '')
+    {
+        if (! $document) {
+            $slug = $slug . '.json';
+        }
+
+        if ($document) {
+            $document = "/$document";
+        }
+
+        $url = "{$this->url}/{$slug}{$document}?api_key={$this->apiKey}";
+        return $this->requester->request('GET', $url);
     }
 }

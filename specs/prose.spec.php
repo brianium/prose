@@ -131,7 +131,26 @@ describe('Prose', function () {
     });
 
     describe('->summary()', function () {
+        beforeEach(function () {
+            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug.json?api_key=12345');
+        });
 
+        it('should request a the book summary identified by slug', function () {
+            $json = file_get_contents(__DIR__ . '/summary.json');
+            $this->request->willReturn(new Response(200, $json));
+
+            $summary = $this->prose->summary('slug');
+
+            expect($summary)->to->be->an('object');
+        });
+
+        it('should return nothing if the slug is not found', function () {
+            $this->request->willReturn(new Response(404));
+
+            $status = $this->prose->summary('slug');
+
+            expect($status)->to->be->null;
+        });
     });
 
     describe('->coupons()', function () {
