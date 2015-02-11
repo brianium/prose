@@ -58,35 +58,17 @@ class Prose
 
     public function status($slug)
     {
-        $response = $this->get($slug, 'book_status');
-
-        if ($response->isSuccessful()) {
-            return json_decode($response->getContent());
-        }
-
-        return null;
+        return $this->getDocument($slug, 'book_status');
     }
 
     public function summary($slug)
     {
-        $response = $this->get($slug);
-
-        if ($response->isSuccessful()) {
-            return json_decode($response->getContent());
-        }
-
-        return null;
+        return $this->getDocument($slug);
     }
 
     public function sales($slug)
     {
-        $response = $this->get($slug, 'sales.json');
-
-        if ($response->isSuccessful()) {
-            return json_decode($response->getContent());
-        }
-
-        return null;
+        return $this->getDocument($slug, 'sales.json');
     }
 
     protected function post($slug, $document, $data = '')
@@ -109,5 +91,16 @@ class Prose
 
         $url = "{$this->url}/{$slug}{$document}?api_key={$this->apiKey}";
         return $this->requester->request('GET', $url);
+    }
+
+    protected function getDocument($slug, $document = "")
+    {
+        $response = $this->get($slug, $document);
+
+        if ($response->isSuccessful()) {
+            return json_decode($response->getContent());
+        }
+
+        return null;
     }
 }
