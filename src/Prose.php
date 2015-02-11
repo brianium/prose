@@ -22,9 +22,17 @@ class Prose
         $this->requester = $requester;
     }
 
-    public function preview($slug)
+    public function preview($slug, $file = "")
     {
-        $this->post($slug, 'preview.json');
+        $document = 'preview.json';
+        $data = "api_key={$this->apiKey}";
+
+        if (file_exists($file)) {
+            $document = "single.json?$data";
+            $data = file_get_contents($file);
+        }
+
+        $this->requester->request('POST', "{$this->url}/$slug/$document", $data);
     }
 
     public function subset($slug)

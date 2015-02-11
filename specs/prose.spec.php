@@ -20,6 +20,15 @@ describe('Prose', function () {
 
             $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled();
         });
+
+        context('when supplying a file', function () {
+            it('should request a single preview with the contents of the file', function () {
+                $this->prose->preview('slug', __DIR__ . '/single.txt');
+
+                $data = file_get_contents(__DIR__ . '/single.txt');
+                $this->requester->request('POST', 'https://leanpub.com/slug/single.json?api_key=12345', $data)->shouldHaveBeenCalled();
+            });
+        });
     });
 
     describe('->subset()', function () {
