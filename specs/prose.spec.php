@@ -28,6 +28,12 @@ describe('Prose', function () {
                 $data = file_get_contents(__DIR__ . '/single.txt');
                 $this->requester->request('POST', 'https://leanpub.com/slug/single.json?api_key=12345', $data)->shouldHaveBeenCalled();
             });
+
+            it('should ignore a file that does not exist', function () {
+                $this->prose->preview('slug', '/path/to/nowhere.txt');
+                
+                $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled();
+            });
         });
     });
 
