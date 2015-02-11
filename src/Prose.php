@@ -8,14 +8,10 @@ class Prose
 {
     protected $request;
 
-    protected $apiKey;
-
-    protected $url;
-
     public function __construct($apiKey, $url = 'https://leanpub.com')
     {
-        $this->apiKey = $apiKey;
-        $this->url = $url;
+        $request = new Request($apiKey, $url);
+        $this->setRequest($request);
     }
 
     public function setRequest(Request $request)
