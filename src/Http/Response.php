@@ -22,4 +22,9 @@ class Response
     {
         return $this->content;
     }
+
+    public function isSuccessful()
+    {
+        return $this->status >= 200 && $this->status < 400;
+    }
 }

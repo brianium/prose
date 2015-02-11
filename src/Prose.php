@@ -36,16 +36,13 @@ class Prose
         }
 
         $response = $this->requester->request('POST', "{$this->url}/$slug/$document", $data, $headers);
-        $status = $response->getStatus();
-        return $status >= 200 && $status < 400;
+        return $response->isSuccessful();
     }
 
     public function subset($slug)
     {
         $response = $this->post($slug, 'subset.json');
-        $status = $response->getStatus();
-
-        return $status >= 200 && $status < 400;
+        return $response->isSuccessful();
     }
 
     public function publish($slug, $releaseNotes = '')
