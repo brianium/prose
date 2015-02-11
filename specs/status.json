@@ -1,0 +1,16 @@
+{
+  "num": 8,
+  "job_type": "GenerateBookJob#preview",
+  "total": 28,
+  "message": "Downloading publisher logo...",
+  "status": "working",
+  "name": "Publish scotttest99",
+  "time": 1376073552,
+  "options": {
+    "requested_by": "scott@leanpub.com",
+    "release_notes": "this is a test\n\nwith two lines",
+    "slug": "scotttest99",
+    "action": "publish",
+    "email_readers": true
+  }
+}

@@ -71,6 +71,17 @@ describe('Prose', function () {
         });
     });
 
+    describe('->status()', function () {
+        it('should request the book status of a slug', function () {
+            $json = file_get_contents(__DIR__ . '/status.json');
+            $this->requester->request('GET', 'https://leanpub.com/slug/book_status?api_key=12345')->willReturn($json);
+
+            $status = $this->prose->status('slug');
+
+            expect($status)->to->be->an('object');
+        });
+    });
+
     describe('->summary()', function () {
 
     });

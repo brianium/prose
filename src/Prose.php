@@ -51,6 +51,12 @@ class Prose
         $this->post($slug, 'publish.json', $releaseNotes);
     }
 
+    public function status($slug)
+    {
+        $response = $this->requester->request('GET', "{$this->url}/$slug/book_status?api_key={$this->apiKey}");
+        return json_decode($response);
+    }
+
     protected function post($slug, $document, $data = '')
     {
         $key = "api_key={$this->apiKey}";
