@@ -28,23 +28,17 @@ class Request
     public function post($slug, $document, $data = '')
     {
         $key = "api_key={$this->apiKey}";
-        $file = '';
         $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
-
-        if (file_exists($data)) {
-            $file = $data;
-            $headers = ['Content-Type' => 'text/plain'];
-        }
-
         $data = ($data) ? $key . "&$data" : $key;
-
         $url = "{$this->url}/$slug/$document";
+        return $this->client->request('POST', $url, $data, $headers);
+    }
 
-        if ($file) {
-            $data = file_get_contents($file);
-            $url .= "?api_key={$this->apiKey}";
-        }
-
+    public function upload($slug, $document, $file)
+    {
+        $headers = ['Content-Type' => 'text/plain'];
+        $data = file_get_contents($file);
+        $url = "{$this->url}/$slug/$document?api_key={$this->apiKey}";
         return $this->client->request('POST', $url, $data, $headers);
     }
 

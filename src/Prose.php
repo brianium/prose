@@ -25,16 +25,11 @@ class Prose
 
     public function preview($slug, $file = "")
     {
-        $document = 'preview.json';
-        $data = "";
-
         if (file_exists($file)) {
-            $document = "single.json";
-            $data = $file;
+            return $this->request->upload($slug, 'single.json', $file)->isSuccessful();
         }
 
-        $response = $this->request->post($slug, $document, $data);
-        return $response->isSuccessful();
+        return $this->request->post($slug, 'preview.json')->isSuccessful();
     }
 
     public function subset($slug)
