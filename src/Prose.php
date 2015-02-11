@@ -78,6 +78,17 @@ class Prose
         return null;
     }
 
+    public function sales($slug)
+    {
+        $response = $this->get($slug, 'sales.json');
+
+        if ($response->isSuccessful()) {
+            return json_decode($response->getContent());
+        }
+
+        return null;
+    }
+
     protected function post($slug, $document, $data = '')
     {
         $key = "api_key={$this->apiKey}";

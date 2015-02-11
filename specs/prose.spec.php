@@ -153,6 +153,29 @@ describe('Prose', function () {
         });
     });
 
+    describe('->sales()', function () {
+        beforeEach(function () {
+            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug/sales.json?api_key=12345');
+        });
+
+        it('should request the sales info for a book', function () {
+            $json = file_get_contents(__DIR__ . '/sales.json');
+            $this->request->willReturn(new Response(200, $json));
+
+            $sales = $this->prose->sales('slug');
+
+            expect($sales)->to->be->an('object');
+        });
+
+        it('should return nothing if the slug is not found', function () {
+            $this->request->willReturn(new Response(404));
+
+            $status = $this->prose->sales('slug');
+
+            expect($status)->to->be->null;
+        });
+    });
+
     describe('->coupons()', function () {
 
     });
