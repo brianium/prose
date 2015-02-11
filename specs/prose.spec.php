@@ -2,11 +2,18 @@
 use Brianium\Prose\Prose;
 use Brianium\Prose\Http\HttpRequesterInterface;
 
+require 'scopes/RequestScope.php';
+
 describe('Prose', function () {
+
+    $this->peridotAddChildScope(new RequestScope('https://leanpub.com'));
+
     beforeEach(function () {
         $this->prose = new Prose('12345');
         $interface = 'Brianium\Prose\Http\HttpRequesterInterface';
         $this->requester = $this->getProphet()->prophesize($interface);
+
+        $this->setHttpRequester($this->requester);
         $this->prose->setHttpRequester($this->requester->reveal());
     });
 
@@ -18,7 +25,7 @@ describe('Prose', function () {
         it('should request a book preview', function () {
             $this->prose->preview('slug');
 
-            $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled();
+            $this->assertRequest('POST', '/slug/preview.json', 'api_key=12345');
         });
 
         context('when supplying a file', function () {
@@ -26,13 +33,13 @@ describe('Prose', function () {
                 $this->prose->preview('slug', __DIR__ . '/single.txt');
 
                 $data = file_get_contents(__DIR__ . '/single.txt');
-                $this->requester->request('POST', 'https://leanpub.com/slug/single.json?api_key=12345', $data)->shouldHaveBeenCalled();
+                $this->assertRequest('POST', '/slug/single.json?api_key=12345', $data, ['Content-Type' => 'text/plain']);
             });
 
             it('should ignore a file that does not exist', function () {
                 $this->prose->preview('slug', '/path/to/nowhere.txt');
-                
-                $this->requester->request('POST', 'https://leanpub.com/slug/preview.json', 'api_key=12345')->shouldHaveBeenCalled();
+
+                $this->assertRequest('POST', '/slug/preview.json', 'api_key=12345');
             });
         });
     });
@@ -41,7 +48,7 @@ describe('Prose', function () {
         it('should request a subset preview', function () {
             $this->prose->subset('slug');
 
-            $this->requester->request('POST', 'https://leanpub.com/slug/subset.json', 'api_key=12345')->shouldHaveBeenCalled();
+            $this->assertRequest('POST', '/slug/subset.json', 'api_key=12345');
         });
     });
 
@@ -49,7 +56,7 @@ describe('Prose', function () {
         it('should request that the book be published', function () {
             $this->prose->publish('slug');
 
-            $this->requester->request('POST', 'https://leanpub.com/slug/publish.json', 'api_key=12345')->shouldHaveBeenCalled();
+            $this->assertRequest('POST', '/slug/publish.json', 'api_key=12345');
         });
 
         context('when providing release notes', function () {
@@ -59,7 +66,7 @@ describe('Prose', function () {
 
                 $this->prose->publish('slug', $notes);
 
-                $this->requester->request('POST', 'https://leanpub.com/slug/publish.json', $data)->shouldHaveBeenCalled();
+                $this->assertRequest('POST', '/slug/publish.json', $data);
             });
         });
     });

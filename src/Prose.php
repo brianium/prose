@@ -26,13 +26,15 @@ class Prose
     {
         $document = 'preview.json';
         $data = "api_key={$this->apiKey}";
+        $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
 
         if (file_exists($file)) {
             $document = "single.json?$data";
             $data = file_get_contents($file);
+            $headers = ['Content-Type' => 'text/plain'];
         }
 
-        $this->requester->request('POST', "{$this->url}/$slug/$document", $data);
+        $this->requester->request('POST', "{$this->url}/$slug/$document", $data, $headers);
     }
 
     public function subset($slug)
@@ -54,6 +56,6 @@ class Prose
         $key = "api_key={$this->apiKey}";
         $data = ($data) ? $key . "&$data" : $key;
         $url = "{$this->url}/$slug/$document";
-        $this->requester->request('POST', $url, $data);
+        $this->requester->request('POST', $url, $data, ['Content-Type' => 'application/x-www-form-urlencoded']);
     }
 }
