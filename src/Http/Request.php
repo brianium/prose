@@ -1,9 +1,9 @@
 <?php
 namespace Brianium\Prose\Http;
 
-class BookRequest
+class Request
 {
-    protected $requester;
+    protected $client;
 
     protected $url;
 
@@ -15,14 +15,14 @@ class BookRequest
         $this->url = $url;
     }
 
-    public function setHttpRequester(HttoRequesterInterface $requester)
+    public function setHttpClient(HttpClientInterface $client)
     {
-        $this->requester = $requester;
+        $this->client = $client;
     }
 
-    public function getRequester()
+    public function getHttpClient()
     {
-        return $this->requester;
+        return $this->client;
     }
 
     public function post($slug, $document, $data = '')
@@ -45,7 +45,7 @@ class BookRequest
             $url .= "?api_key={$this->apiKey}";
         }
 
-        return $this->requester->request('POST', $url, $data, $headers);
+        return $this->client->request('POST', $url, $data, $headers);
     }
 
     public function get($slug, $document = '')
@@ -59,7 +59,7 @@ class BookRequest
         }
 
         $url = "{$this->url}/{$slug}{$document}?api_key={$this->apiKey}";
-        return $this->requester->request('GET', $url);
+        return $this->client->request('GET', $url);
     }
 
     public function getDocument($slug, $document = "")

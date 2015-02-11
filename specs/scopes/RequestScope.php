@@ -5,7 +5,7 @@ class RequestScope extends Scope
 {
     private $url;
 
-    private $requester;
+    private $client;
 
     public function __construct($url)
     {
@@ -20,11 +20,11 @@ class RequestScope extends Scope
     public function request($method, $path, $data = '', $headers = ['Content-Type' => 'application/x-www-form-urlencoded'])
     {
         $url = "{$this->url}$path";
-        return $this->requester->request($method, $url, $data, $headers);
+        return $this->client->request($method, $url, $data, $headers);
     }
 
-    public function setHttpRequester($requester)
+    public function setHttpClient($client)
     {
-        $this->requester = $requester;
+        $this->client = $client;
     }
 }

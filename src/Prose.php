@@ -1,7 +1,7 @@
 <?php
 namespace Brianium\Prose;
 
-use Brianium\Prose\Http\BookRequest;
+use Brianium\Prose\Http\Request;
 use Brianium\Prose\Http\Response;
 
 class Prose
@@ -18,7 +18,7 @@ class Prose
         $this->url = $url;
     }
 
-    public function setBookRequest(BookRequest $request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
     }

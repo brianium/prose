@@ -1,7 +1,7 @@
 <?php
 use Brianium\Prose\Prose;
 use Brianium\Prose\Http\HttpRequesterInterface;
-use Brianium\Prose\Http\BookRequest;
+use Brianium\Prose\Http\Request;
 use Brianium\Prose\Http\Response;
 
 require 'scopes/RequestScope.php';
@@ -12,13 +12,13 @@ describe('Prose', function () {
 
     beforeEach(function () {
         $this->prose = new Prose('12345');
-        $interface = 'Brianium\Prose\Http\HttpRequesterInterface';
-        $this->requester = $this->getProphet()->prophesize($interface);
+        $interface = 'Brianium\Prose\Http\HttpClientInterface';
+        $this->client = $this->getProphet()->prophesize($interface);
 
-        $this->setHttpRequester($this->requester);
-        $this->bookRequest = new BookRequest('12345');
-        $this->bookRequest->setHttpRequester($this->requester->reveal());
-        $this->prose->setBookRequest($this->bookRequest);
+        $this->setHttpClient($this->client);
+        $this->req = new Request('12345');
+        $this->req->setHttpClient($this->client->reveal());
+        $this->prose->setRequest($this->req);
     });
 
     afterEach(function () {
@@ -112,7 +112,7 @@ describe('Prose', function () {
 
     describe('->status()', function () {
         beforeEach(function () {
-            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug/book_status?api_key=12345');
+            $this->request = $this->client->request('GET', 'https://leanpub.com/slug/book_status?api_key=12345');
         });
 
         it('should request the book status of a slug', function () {
@@ -135,7 +135,7 @@ describe('Prose', function () {
 
     describe('->summary()', function () {
         beforeEach(function () {
-            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug.json?api_key=12345');
+            $this->request = $this->client->request('GET', 'https://leanpub.com/slug.json?api_key=12345');
         });
 
         it('should request a the book summary identified by slug', function () {
@@ -158,7 +158,7 @@ describe('Prose', function () {
 
     describe('->sales()', function () {
         beforeEach(function () {
-            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug/sales.json?api_key=12345');
+            $this->request = $this->client->request('GET', 'https://leanpub.com/slug/sales.json?api_key=12345');
         });
 
         it('should request the sales info for a book', function () {

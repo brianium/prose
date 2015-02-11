@@ -1,7 +1,7 @@
 <?php
 namespace Brianium\Prose\Http;
 
-interface HttpRequesterInterface
+interface HttpClientInterface
 {
     /**
      * @param string $method
