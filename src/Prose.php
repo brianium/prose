@@ -51,7 +51,9 @@ class Prose
             $releaseNotes = 'publish[email_readers]=true&publish[release_notes]=' . urlencode($releaseNotes);
         }
 
-        $this->post($slug, 'publish.json', $releaseNotes);
+        $response = $this->post($slug, 'publish.json', $releaseNotes);
+
+        return $response->isSuccessful();
     }
 
     public function status($slug)

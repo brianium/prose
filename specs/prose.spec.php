@@ -79,19 +79,30 @@ describe('Prose', function () {
 
     describe('->publish()', function () {
         it('should request that the book be published', function () {
-            $this->prose->publish('slug');
+            $this->request('POST', '/slug/publish.json', 'api_key=12345')->willReturn(new Response(200));
 
-            $this->assertRequest('POST', '/slug/publish.json', 'api_key=12345');
+            $status = $this->prose->publish('slug');
+
+            expect($status)->to->be->true;
+        });
+
+        it('should return a false status for an error response', function () {
+            $this->request('POST', '/slug/publish.json', 'api_key=12345')->willReturn(new Response(404));
+
+            $status = $this->prose->publish('slug');
+
+            expect($status)->to->be->false;
         });
 
         context('when providing release notes', function () {
             it('should request that the book be published and readers be notified with release notes', function () {
                 $notes = 'hope you enjoy!';
                 $data = 'api_key=12345&publish[email_readers]=true&publish[release_notes]=' . urlencode($notes);
+                $this->request('POST', '/slug/publish.json', $data)->willReturn(new Response(200));
 
-                $this->prose->publish('slug', $notes);
+                $status = $this->prose->publish('slug', $notes);
 
-                $this->assertRequest('POST', '/slug/publish.json', $data);
+                expect($status)->to->be->true;
             });
         });
     });
