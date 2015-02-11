@@ -1,6 +1,7 @@
 <?php
 use Brianium\Prose\Prose;
 use Brianium\Prose\Http\HttpRequesterInterface;
+use Brianium\Prose\Http\BookRequest;
 use Brianium\Prose\Http\Response;
 
 require 'scopes/RequestScope.php';
@@ -15,7 +16,9 @@ describe('Prose', function () {
         $this->requester = $this->getProphet()->prophesize($interface);
 
         $this->setHttpRequester($this->requester);
-        $this->prose->setHttpRequester($this->requester->reveal());
+        $this->bookRequest = new BookRequest('12345');
+        $this->bookRequest->setHttpRequester($this->requester->reveal());
+        $this->prose->setBookRequest($this->bookRequest);
     });
 
     afterEach(function () {

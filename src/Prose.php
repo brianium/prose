@@ -1,12 +1,12 @@
 <?php
 namespace Brianium\Prose;
 
-use Brianium\Prose\Http\HttpRequesterInterface;
+use Brianium\Prose\Http\BookRequest;
 use Brianium\Prose\Http\Response;
 
 class Prose
 {
-    protected $requester;
+    protected $request;
 
     protected $apiKey;
 
@@ -18,30 +18,28 @@ class Prose
         $this->url = $url;
     }
 
-    public function setHttpRequester(HttpRequesterInterface $requester)
+    public function setBookRequest(BookRequest $request)
     {
-        $this->requester = $requester;
+        $this->request = $request;
     }
 
     public function preview($slug, $file = "")
     {
         $document = 'preview.json';
-        $data = "api_key={$this->apiKey}";
-        $headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
+        $data = "";
 
         if (file_exists($file)) {
-            $document = "single.json?$data";
-            $data = file_get_contents($file);
-            $headers = ['Content-Type' => 'text/plain'];
+            $document = "single.json";
+            $data = $file;
         }
 
-        $response = $this->requester->request('POST', "{$this->url}/$slug/$document", $data, $headers);
+        $response = $this->request->post($slug, $document, $data);
         return $response->isSuccessful();
     }
 
     public function subset($slug)
     {
-        $response = $this->post($slug, 'subset.json');
+        $response = $this->request->post($slug, 'subset.json');
         return $response->isSuccessful();
     }
 
@@ -51,56 +49,23 @@ class Prose
             $releaseNotes = 'publish[email_readers]=true&publish[release_notes]=' . urlencode($releaseNotes);
         }
 
-        $response = $this->post($slug, 'publish.json', $releaseNotes);
+        $response = $this->request->post($slug, 'publish.json', $releaseNotes);
 
         return $response->isSuccessful();
     }
 
     public function status($slug)
     {
-        return $this->getDocument($slug, 'book_status');
+        return $this->request->getDocument($slug, 'book_status');
     }
 
     public function summary($slug)
     {
-        return $this->getDocument($slug);
+        return $this->request->getDocument($slug);
     }
 
     public function sales($slug)
     {
-        return $this->getDocument($slug, 'sales.json');
-    }
-
-    protected function post($slug, $document, $data = '')
-    {
-        $key = "api_key={$this->apiKey}";
-        $data = ($data) ? $key . "&$data" : $key;
-        $url = "{$this->url}/$slug/$document";
-        return $this->requester->request('POST', $url, $data, ['Content-Type' => 'application/x-www-form-urlencoded']);
-    }
-
-    protected function get($slug, $document = '')
-    {
-        if (! $document) {
-            $slug = $slug . '.json';
-        }
-
-        if ($document) {
-            $document = "/$document";
-        }
-
-        $url = "{$this->url}/{$slug}{$document}?api_key={$this->apiKey}";
-        return $this->requester->request('GET', $url);
-    }
-
-    protected function getDocument($slug, $document = "")
-    {
-        $response = $this->get($slug, $document);
-
-        if ($response->isSuccessful()) {
-            return json_decode($response->getContent());
-        }
-
-        return null;
+        return $this->request->getDocument($slug, 'sales.json');
     }
 }
