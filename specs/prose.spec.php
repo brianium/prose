@@ -24,32 +24,56 @@ describe('Prose', function () {
 
     describe('->preview()', function () {
         it('should request a book preview', function () {
-            $this->prose->preview('slug');
+            $this->request('POST', '/slug/preview.json', 'api_key=12345')->willReturn(new Response(200));
 
-            $this->assertRequest('POST', '/slug/preview.json', 'api_key=12345');
+            $status = $this->prose->preview('slug');
+
+            expect($status)->to->be->true;
+        });
+
+        it('should return a false status for an error response', function () {
+            $this->request('POST', '/slug/preview.json', 'api_key=12345')->willReturn(new Response(404));
+
+            $status = $this->prose->preview('slug');
+
+            expect($status)->to->be->false;
         });
 
         context('when supplying a file', function () {
             it('should request a single preview with the contents of the file', function () {
-                $this->prose->preview('slug', __DIR__ . '/single.txt');
-
                 $data = file_get_contents(__DIR__ . '/single.txt');
-                $this->assertRequest('POST', '/slug/single.json?api_key=12345', $data, ['Content-Type' => 'text/plain']);
+                $this->request('POST', '/slug/single.json?api_key=12345', $data, ['Content-Type' => 'text/plain'])->willReturn(new Response(200));
+
+                $status = $this->prose->preview('slug', __DIR__ . '/single.txt');
+
+                expect($status)->to->be->true;
             });
 
             it('should ignore a file that does not exist', function () {
-                $this->prose->preview('slug', '/path/to/nowhere.txt');
+                $this->request('POST', '/slug/preview.json', 'api_key=12345')->willReturn(new Response(200));
 
-                $this->assertRequest('POST', '/slug/preview.json', 'api_key=12345');
+                $status = $this->prose->preview('slug', '/path/to/nowhere.txt');
+
+                expect($status)->to->be->true;
             });
         });
     });
 
     describe('->subset()', function () {
         it('should request a subset preview', function () {
-            $this->prose->subset('slug');
+            $this->request('POST', '/slug/subset.json', 'api_key=12345')->willReturn(new Response(200));
 
-            $this->assertRequest('POST', '/slug/subset.json', 'api_key=12345');
+            $status = $this->prose->subset('slug');
+
+            expect($status)->to->be->true;
+        });
+
+        it('should return a false status for an error response', function () {
+            $this->request('POST', '/slug/subset.json', 'api_key=12345')->willReturn(new Response(404));
+
+            $status = $this->prose->subset('slug');
+
+            expect($status)->to->be->false;
         });
     });
 

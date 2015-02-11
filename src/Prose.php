@@ -35,12 +35,17 @@ class Prose
             $headers = ['Content-Type' => 'text/plain'];
         }
 
-        $this->requester->request('POST', "{$this->url}/$slug/$document", $data, $headers);
+        $response = $this->requester->request('POST', "{$this->url}/$slug/$document", $data, $headers);
+        $status = $response->getStatus();
+        return $status >= 200 && $status < 400;
     }
 
     public function subset($slug)
     {
-        $this->post($slug, 'subset.json');
+        $response = $this->post($slug, 'subset.json');
+        $status = $response->getStatus();
+
+        return $status >= 200 && $status < 400;
     }
 
     public function publish($slug, $releaseNotes = '')
@@ -69,6 +74,6 @@ class Prose
         $key = "api_key={$this->apiKey}";
         $data = ($data) ? $key . "&$data" : $key;
         $url = "{$this->url}/$slug/$document";
-        $this->requester->request('POST', $url, $data, ['Content-Type' => 'application/x-www-form-urlencoded']);
+        return $this->requester->request('POST', $url, $data, ['Content-Type' => 'application/x-www-form-urlencoded']);
     }
 }

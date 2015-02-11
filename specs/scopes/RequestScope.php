@@ -12,10 +12,15 @@ class RequestScope extends Scope
         $this->url = $url;
     }
 
-    public function assertRequest($method, $path, $data, $headers = ['Content-Type' => 'application/x-www-form-urlencoded'])
+    public function assertRequest($method, $path, $data = '', $headers = ['Content-Type' => 'application/x-www-form-urlencoded'])
+    {        
+        $this->request($method, $path, $data, $headers)->shouldHaveBeenCalled();
+    }
+
+    public function request($method, $path, $data = '', $headers = ['Content-Type' => 'application/x-www-form-urlencoded'])
     {
         $url = "{$this->url}$path";
-        $this->requester->request($method, $url, $data, $headers)->shouldHaveBeenCalled();
+        return $this->requester->request($method, $url, $data, $headers);
     }
 
     public function setHttpRequester($requester)
