@@ -1,6 +1,7 @@
 <?php
 use Brianium\Prose\Prose;
 use Brianium\Prose\Http\HttpRequesterInterface;
+use Brianium\Prose\Http\Response;
 
 require 'scopes/RequestScope.php';
 
@@ -72,13 +73,25 @@ describe('Prose', function () {
     });
 
     describe('->status()', function () {
+        beforeEach(function () {
+            $this->request = $this->requester->request('GET', 'https://leanpub.com/slug/book_status?api_key=12345');
+        });
+
         it('should request the book status of a slug', function () {
             $json = file_get_contents(__DIR__ . '/status.json');
-            $this->requester->request('GET', 'https://leanpub.com/slug/book_status?api_key=12345')->willReturn($json);
+            $this->request->willReturn(new Response(200, $json));
 
             $status = $this->prose->status('slug');
 
             expect($status)->to->be->an('object');
+        });
+
+        it('should return nothing if the slug is not found', function () {
+            $this->request->willReturn(new Response(404));
+
+            $status = $this->prose->status('slug');
+
+            expect($status)->to->be->null;
         });
     });
 

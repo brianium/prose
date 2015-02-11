@@ -2,6 +2,7 @@
 namespace Brianium\Prose;
 
 use Brianium\Prose\Http\HttpRequesterInterface;
+use Brianium\Prose\Http\Response;
 
 class Prose
 {
@@ -54,7 +55,13 @@ class Prose
     public function status($slug)
     {
         $response = $this->requester->request('GET', "{$this->url}/$slug/book_status?api_key={$this->apiKey}");
-        return json_decode($response);
+        $status = $response->getStatus();
+
+        if ($status >= 200 && $status < 400) {
+            return json_decode($response->getContent());
+        }
+
+        return null;
     }
 
     protected function post($slug, $document, $data = '')
